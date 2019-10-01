@@ -1,0 +1,47 @@
+version: 2.1
+jobs:
+  preproc:
+    docker:
+      - image: circleci/python:3.7.4
+      
+    steps:
+      - checkout
+      
+      - run:
+        name: download
+        command: git clone https://github.com/etcher-be/EDLM
+        
+      - run:
+        name: install
+        command: pipenv install
+        
+      - run:
+        name: run
+        command: pipenv shell edlm --debug convert pdf .
+
+  build:
+    docker:
+      - image: caconym1502/tectonic:latest
+
+    steps:
+      - checkout
+
+      - run:
+          name: Greetings
+          command: echo Hello, world.
+
+      - run:
+          name: Print the Current Time
+          command: date
+
+      - run:
+          name: pwd
+          command: pwd
+
+      - run:
+          name: pdflatex
+          command: tectonic main.tex
+          
+      # persist artifact to workspace: https://circleci.com/docs/2.0/configuration-reference/#persist_to_workspace
+      - store_artifacts:
+          path: main.pdf
